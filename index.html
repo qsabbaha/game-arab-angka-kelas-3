@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>لعبة الأرقام</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Amiri&display=swap');
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Amiri', serif;
+  background: url("https://images.unsplash.com/photo-1444703686981-a3abbc4d4fe3") no-repeat center center fixed;
+  background-size: cover;
+  color: white;
+  min-height: 100vh;
+}
+
+.overlay {
+  background: rgba(0,0,0,0.65);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.game {
+  width: 95%;
+  max-width: 900px;
+  background: rgba(20,20,40,0.85);
+  border-radius: 25px;
+  padding: 30px;
+  text-align: center;
+  animation: fadeIn 1s ease;
+}
+
+h1 {
+  font-size: 42px;
+  margin-bottom: 10px;
+}
+
+#question {
+  font-size: 40px;
+  margin: 30px 0;
+}
+
+.answers button {
+  width: 100%;
+  max-width: 400px;
+  margin: 12px auto;
+  padding: 18px;
+  font-size: 30px;
+  border: none;
+  border-radius: 20px;
+  background: linear-gradient(135deg,#3fa9f5,#1c5fd4);
+  color: white;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.answers button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 15px #5dade2;
+}
+
+#result {
+  font-size: 32px;
+  margin-top: 20px;
+}
+
+#score {
+  font-size: 22px;
+  margin-top: 10px;
+}
+
+@keyframes fadeIn {
+  from {opacity:0; transform:scale(0.9);}
+  to {opacity:1; transform:scale(1);}
+}
+</style>
+</head>
+
+<body>
+<div class="overlay">
+  <div class="game">
+    <h1>🌌 لعبة الأرقام 🌌</h1>
+
+    <div id="question"></div>
+
+    <div class="answers">
+      <button onclick="checkAnswer(0)"></button>
+      <button onclick="checkAnswer(1)"></button>
+      <button onclick="checkAnswer(2)"></button>
+    </div>
+
+    <div id="result"></div>
+    <div id="score"></div>
+  </div>
+</div>
+
+<audio id="correctSound" src="https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3"></audio>
+<audio id="wrongSound" src="https://assets.mixkit.co/active_storage/sfx/2748/2748-preview.mp3"></audio>
+
+<script>
+const questions = [
+  { q: "١ + ١ = ؟", answers: ["١","٢","٣"], correct: 1 },
+  { q: "٣ + ٢ = ؟", answers: ["٤","٥","٦"], correct: 1 },
+  { q: "٥ − ١ = ؟", answers: ["٣","٤","٥"], correct: 1 },
+  { q: "٤ + ٤ = ؟", answers: ["٧","٨","٩"], correct: 1 },
+  { q: "٩ − ٣ = ؟", answers: ["٥","٦","٧"], correct: 1 },
+  { q: "٦ + ٢ = ؟", answers: ["٧","٨","٩"], correct: 1 },
+  { q: "٨ − ٤ = ؟", answers: ["٣","٤","٥"], correct: 1 },
+  { q: "٢ + ٥ = ؟", answers: ["٦","٧","٨"], correct: 1 },
+  { q: "١٠ − ٥ = ؟", answers: ["٤","٥","٦"], correct: 1 },
+  { q: "٧ − ٢ = ؟", answers: ["٤","٥","٦"], correct: 1 }
+];
+
+let index = 0;
+let score = 0;
+
+const questionEl = document.getElementById("question");
+const buttons = document.querySelectorAll(".answers button");
+const resultEl = document.getElementById("result");
+const scoreEl = document.getElementById("score");
+const correctSound = document.getElementById("correctSound");
+const wrongSound = document.getElementById("wrongSound");
+
+function loadQuestion() {
+  resultEl.textContent = "";
+  questionEl.textContent = questions[index].q;
+  buttons.forEach((btn, i) => {
+    btn.textContent = questions[index].answers[i];
+  });
+  scoreEl.textContent = "⭐ النتيجة: " + score + " / " + questions.length;
+}
+
+function checkAnswer(choice) {
+  if (choice === questions[index].correct) {
+    resultEl.textContent = "✨ أحسنت ✨";
+    correctSound.play();
+    score++;
+  } else {
+    resultEl.textContent = "🌠 حاول مرة أخرى 🌠";
+    wrongSound.play();
+  }
+
+  setTimeout(() => {
+    index++;
+    if (index < questions.length) {
+      loadQuestion();
+    } else {
+      questionEl.textContent = "🚀 انتهت اللعبة";
+      document.querySelector(".answers").style.display = "none";
+      resultEl.textContent = "⭐ نتيجتك: " + score + " / " + questions.length;
+    }
+  }, 1200);
+}
+
+loadQuestion();
+</script>
+</body>
+</html>
